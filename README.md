@@ -45,4 +45,4 @@ Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em seu computado
 
 ### 2. Clonar o Repositório
 ```bash
-git clone https://github.com/seu-usuario/jogo-da-velha-avancado.git 
+git clone https://github.com/Ana-Calafati/jogo-da-velha.git

@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
 
- Qual será a estratégia adotada para a refatoração e evolução da aplicação?
-
 function Square({ value, onSquareClick }) {
   return (
     <button className="square" onClick={onSquareClick}>

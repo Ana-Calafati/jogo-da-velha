@@ -1,0 +1,19 @@
+.square {
+  /* Dimensões fixas e iguais */
+  width: 80px;
+  height: 80px;
+
+  /* Estilização do Botão */
+  border: 2px solid #333;
+  background-color: #ffffff;
+  cursor: pointer;
+
+  /* Tipografia e Centralização */
+  font-size: 2rem;
+  font-weight: bold;
+  
+  /* Garante que o X ou O fiquem perfeitamente centralizados */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

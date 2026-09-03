@@ -1,0 +1,92 @@
+.boardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin: 2rem auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Informações do status do turno e jogadores */
+.statusInfo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background-color: #f7fafc;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+}
+
+/* O grid do tabuleiro com cálculo dinâmico de colunas */
+.grid {
+  display: grid;
+  /* Define o número de colunas dinamicamente baseado na variável passada pelo JS */
+  grid-template-columns: repeat(var(--board-size, 3), 1fr);
+  gap: 8px;
+  background-color: #e2e8f0;
+  padding: 8px;
+  border-radius: 12px;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Garante que o tabuleiro seja sempre um quadrado perfeito */
+}
+
+/* Estilização de cada quadrado do tabuleiro */
+.square {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: calc(2rem - (var(--board-size, 3) * 0.15rem)); /* Diminui a fonte em tabuleiros maiores */
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Efeito de hover ao passar o mouse em quadrados vazios */
+.square:hover:not(:disabled) {
+  background-color: #edf2f7;
+  transform: scale(1.02);
+}
+
+/* Cores específicas para as jogadas para dar destaque visual */
+.square[data-player="X"] {
+  color: #3182ce; /* Azul para o X */
+}
+
+.square[data-player="O"] {
+  color: #e53e3e; /* Vermelho para o O */
+}
+
+/* Estado desabilitado quando já está preenchido ou fim de jogo */
+.square:disabled {
+  cursor: not-allowed;
+}
+
+/* Botão de reiniciar ou resetar a partida */
+.resetBtn {
+  margin-top: 1.5rem;
+  background-color: #4a5568;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.resetBtn:hover {
+  background-color: #2d3748;
+}

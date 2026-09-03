@@ -1,21 +1,23 @@
 
 .configForm {
-  background-color: #ffffff;
+  background-color: #fffaf0; /* Fundo amarelo pastel bem suave */
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(255, 182, 193, 0.2); /* Sombra em tom rosa */
   max-width: 450px;
   margin: 2rem auto;
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  border: 2px solid #ffe4e1; /* Borda rosa claro */
 }
 
 .configForm h2 {
   text-align: center;
   margin: 0 0 0.5rem 0;
-  color: #333333;
+  color: #ff69b4; /* Título Rosa Choque suave */
+  font-size: 1.6rem;
 }
 
 .formGroup {
@@ -26,38 +28,44 @@
 
 .formGroup label {
   font-weight: bold;
-  color: #555555;
-  font-size: 0.9rem;
+  color: #b57c8a; /* Marrom rosado para legibilidade */
+  font-size: 0.95rem;
 }
 
 .formGroup input,
 .formGroup select {
   padding: 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border: 2px solid #ffe4e1;
+  border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.2s ease-in-out;
+  background-color: #ffffff;
+  color: #4a4a4a;
+  transition: all 0.2s ease-in-out;
   outline: none;
 }
 
+/* Quando o usuário clica nos campos, eles brilham em rosa */
 .formGroup input:focus,
 .formGroup select:focus {
-  border-color: #4a90e2;
+  border-color: #ffb6c1;
+  box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.4);
 }
 
 .submitBtn {
-  background-color: #4a90e2;
-  color: white;
+  background-color: #ffb6c1; /* Botão Rosa Claro */
+  color: #ffffff;
   border: none;
-  padding: 0.75rem;
+  padding: 0.85rem;
   font-size: 1.1rem;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
 }
 
 .submitBtn:hover {
-  background-color: #357abd;
+  background-color: #ff9aa2; /* Rosa um pouco mais intenso no hover */
+  transform: translateY(-1px);
 }

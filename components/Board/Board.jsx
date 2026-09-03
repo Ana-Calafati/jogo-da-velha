@@ -1,40 +1,28 @@
+import React from 'react';
+import styles from './Board.module.css'; // 1. Garanta esta importação exata!
 
-import Square from '../Square/Square';
-/**
- * Componente Board (Tabuleiro)
- * Renderiza dinamicamente uma grade NxN de quadrados baseada no tamanho do array de estado.
- * Responsável por gerenciar a disposição visual das linhas e colunas e repassar eventos de clique.
- *
- * @component
- * @param {Object} props - Propriedades do componente.
- * @param {Array<string|null>} props.squares - Array unidimensional contendo o estado atual do tabuleiro.
- * @param {Function} props.onPlay - Função de callback disparada ao clicar em um quadrado, recebendo o índice dele.
- * @returns {JSX.Element} O tabuleiro renderizado dinamicamente.
- */
-export default function Board({ squares, onPlay }) {
-  // Calcula a dimensão N do tabuleiro (ex: se squares.length é 16, boardSize é 4)
-  const boardSize = Math.sqrt(squares.length);
-  // Cria um array iterável de tamanho N para mapear as linhas
-  const rows = Array(boardSize).fill(null);
-
+export default function Board({ boardSize, squares, onPlay, status }) {
   return (
-    <div className="board">
-      {rows.map((_, rowIndex) => (
-        <div key={rowIndex} className="board-row">
-          {rows.map((_, colIndex) => {
-            const squareIndex = rowIndex * boardSize + colIndex;
-
-            return (
-              <Square
-                key={squareIndex}
-                index={squareIndex}
-                value={squares[squareIndex]}
-                onSquareClick={() => onPlay(squareIndex)}
-              />
-            );
-          })}
-        </div>
-      ))}
+    <div className={styles.boardContainer}> {/* 2. Usando o container centralizado */}
+      <div className={styles.statusInfo}>{status}</div> {/* 3. Status amarelo */}
+      
+      {/* 4. Passando a variável de tamanho para o CSS Grid */}
+      <div 
+        className={styles.grid} 
+        style={{ '--board-size': boardSize }}
+      >
+        {squares.map((square, i) => (
+          <button 
+            key={i} 
+            className={styles.square} // 5. Classe de estilo do quadrado
+            data-player={square} // 6. Pinta X de rosa/vermelho e O de amarelo ouro
+            onClick={() => onPlay(i)}
+            disabled={square !== null}
+          >
+            {square}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

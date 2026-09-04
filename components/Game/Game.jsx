@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // 1. Adicionado useEffect para controlar o turno da IA
 import GameConfig from './GameConfig.jsx';
 import Board from '../Board/Board.jsx';
-import { calculateWinner } from '../Game/gameRules.js'; // 1. Importa a regra do juiz
+// 2. Importa as duas funções juntas do seu arquivo gameRules atualizado
+import { calculateWinner, getRandomAIMove } from '../Game/gameRules.js'; 
 
-// IMPORTANTE: Certifique-se de que o caminho do seu arquivo CSS unificado está correto
+// Importa o arquivo de estilos unificado
 import styles from './GameConfig.module.css'; 
 
 export default function Game() {
@@ -14,7 +15,7 @@ export default function Game() {
 
   // --- ESTADOS DE CONTROLE DA SÉRIE ---
   const [scores, setScores] = useState({ player1: 0, player2: 0, ties: 0 });
-  const [currentGameCount, setCurrentGameCount] = useState(1); // Contador visual de partidas jogadas
+  const [currentGameCount, setCurrentGameCount] = useState(1);
   const [seriesOver, setSeriesOver] = useState(false);
 
   function handleStartGame(configData) {
@@ -30,13 +31,32 @@ export default function Game() {
     setSeriesOver(false);
   }
 
-  // 2. Chamada do juiz a cada renderização
+  // 3. Chamada do juiz a cada renderização
   const winner = gameConfig ? calculateWinner(squares, gameConfig.boardSize) : null;
   const isDraw = !winner && squares.length > 0 && squares.every(square => square !== null);
 
+  // --- EFEITO AUTOMÁTICO: TURNO DA IA ---
+  useEffect(() => {
+    // Só age se o jogo começou, o modo escolhido for 'ai', for o turno do 'O' (Robô) e a partida não acabou
+    const isAITurn = gameStarted && gameConfig?.gameMode === 'ai' && !xIsNext;
+    const isGameOver = winner || isDraw;
+
+    if (isAITurn && !isGameOver) {
+      // Pequeno atraso de 500ms para simular o tempo de pensamento do robô (Melhor UX)
+      const timer = setTimeout(() => {
+        const aiMove = getRandomAIMove(squares);
+        
+        if (aiMove !== null) {
+          handlePlay(aiMove); // Executa a jogada do robô chamando a função de clique
+        }
+      }, 500);
+
+      return () => clearTimeout(timer); // Limpa o timer caso o componente mude de estado rápido demais
+    }
+  }, [squares, xIsNext, gameConfig, gameStarted, winner, isDraw]);
+
   // --- FUNÇÃO: ADICIONA OS PONTOS E VALIDA O ALVO DE VITÓRIAS ---
   function handleNextGame() {
-    // 1. Calcula os novos pontos localmente para validação imediata
     let updatedScores = { ...scores };
     if (winner === 'X') {
       updatedScores.player1 += 1;
@@ -46,17 +66,12 @@ export default function Game() {
       updatedScores.ties += 1;
     }
 
-    // Salva no estado do React para atualizar o visual
     setScores(updatedScores);
-
-    // Target de vitórias configurado pelo usuário no GameConfig
     const targetWins = gameConfig.maxGames;
 
-    // 2. Condição de Fim de Série: Alguém chegou ao número de vitórias necessárias?
     if (updatedScores.player1 === targetWins || updatedScores.player2 === targetWins) {
       setSeriesOver(true);
     } else {
-      // A série continua: limpa o tabuleiro e incrementa o contador de partidas
       const totalCells = gameConfig.boardSize * gameConfig.boardSize;
       setSquares(Array(totalCells).fill(null));
       setXIsNext(true);
@@ -82,7 +97,7 @@ export default function Game() {
     return <GameConfig onStartGame={handleStartGame} />;
   }
 
-  // --- TELA FINAL: CAMPEÃO DA SÉRIE POR ALVO DE VITÓRIAS ---
+  // --- TELA FINAL: CAMPEÃO DA SÉRIE ---
   if (seriesOver) {
     const finalWinnerName = scores.player1 === gameConfig.maxGames ? gameConfig.player1 : gameConfig.player2;
 
@@ -136,7 +151,6 @@ export default function Game() {
     statusText = `Turno de: ${currentPlayerName} (${currentSymbol})`;
   }
 
-  // Verifica se a próxima ação terminará a série inteira
   const willNextGameEndSeries = (winner === 'X' && scores.player1 + 1 === gameConfig.maxGames) || 
                                 (winner === 'O' && scores.player2 + 1 === gameConfig.maxGames);
 
@@ -178,4 +192,6 @@ export default function Game() {
     </div>
   );
 }
+
+
 

@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'; // 1. Mantém o useEffect ativo para monitorar os turnos
+import { useState, useEffect } from 'react'; 
 import GameConfig from './GameConfig.jsx';
 import Board from '../Board/Board.jsx';
-// 2. Atualizado o import para usar a nova função mestre de IA (getAIMove)
 import { calculateWinner, getAIMove } from '../Game/gameRules.js'; 
 
-// Importa o arquivo de estilos unificado
 import styles from './GameConfig.module.css'; 
 
 export default function Game() {
@@ -25,43 +23,42 @@ export default function Game() {
     setXIsNext(true);
     setGameStarted(true);
     
-    // Reseta completamente a série para um novo jogo
     setScores({ player1: 0, player2: 0, ties: 0 });
     setCurrentGameCount(1);
     setSeriesOver(false);
   }
 
-  // 3. Chamada do juiz a cada renderização
+  // 3. Chamada do juiz a cada renderização (calcula o emoji vencedor dinamicamente)
   const winner = gameConfig ? calculateWinner(squares, gameConfig.boardSize) : null;
   const isDraw = !winner && squares.length > 0 && squares.every(square => square !== null);
 
-  // --- EFEITO AUTOMÁTICO: TURNO DA IA COM NÍVEIS DE DIFICULDADE ---
+  // --- EFEITO AUTOMÁTICO: TURNO DA IA ---
   useEffect(() => {
-    // Só age se o jogo começou, o modo escolhido for 'ai', for o turno do 'O' (Robô) e a partida não acabou
     const isAITurn = gameStarted && gameConfig?.gameMode === 'ai' && !xIsNext;
     const isGameOver = winner || isDraw;
 
     if (isAITurn && !isGameOver) {
-      // Pequeno atraso de 500ms para simular o tempo de pensamento do robô (Melhor UX)
       const timer = setTimeout(() => {
-        // Agora passa dinamicamente a dificuldade selecionada nas configurações para decidir a jogada!
-        const aiMove = getAIMove(squares, gameConfig.boardSize, gameConfig.difficulty);
+        // Passamos o símbolo da IA (player2Symbol) e do Jogador (player1Symbol) para as regras
+        const aiMove = getAIMove(squares, gameConfig.boardSize, gameConfig.difficulty, gameConfig.player2Symbol, gameConfig.player1Symbol);
         
         if (aiMove !== null) {
-          handlePlay(aiMove); // Executa a jogada calculada simulando o clique do robô
+          handlePlay(aiMove); 
         }
       }, 500);
 
-      return () => clearTimeout(timer); // Limpa o timer caso o componente mude de estado rápido demais
+      return () => clearTimeout(timer);
     }
   }, [squares, xIsNext, gameConfig, gameStarted, winner, isDraw]);
 
   // --- FUNÇÃO: ADICIONA OS PONTOS E VALIDA O ALVO DE VITÓRIAS ---
   function handleNextGame() {
     let updatedScores = { ...scores };
-    if (winner === 'X') {
+    
+    // Agora o juiz valida com base nos emojis escolhidos e não mais em 'X' e 'O' fixos!
+    if (winner === gameConfig.player1Symbol) {
       updatedScores.player1 += 1;
-    } else if (winner === 'O') {
+    } else if (winner === gameConfig.player2Symbol) {
       updatedScores.player2 += 1;
     } else if (isDraw) {
       updatedScores.ties += 1;
@@ -84,7 +81,9 @@ export default function Game() {
     if (winner || isDraw || squares[index]) return;
 
     const nextSquares = squares.slice();
-    nextSquares[index] = xIsNext ? 'X' : 'O';
+    
+    // Grava no tabuleiro o emoji do turno atual
+    nextSquares[index] = xIsNext ? gameConfig.player1Symbol : gameConfig.player2Symbol;
     
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
@@ -115,11 +114,11 @@ export default function Game() {
             Placar Final:
           </p>
           <p>
-            <span>{gameConfig.player1}:</span> 
+            <span>{gameConfig.player1} ({gameConfig.player1Symbol}):</span> 
             <strong>{scores.player1} {scores.player1 === 1 ? 'vitória' : 'vitórias'}</strong>
           </p>
           <p>
-            <span>{gameConfig.player2}:</span> 
+            <span>{gameConfig.player2} ({gameConfig.player2Symbol}):</span> 
             <strong>{scores.player2} {scores.player2 === 1 ? 'vitória' : 'vitórias'}</strong>
           </p>
           <p>
@@ -139,35 +138,34 @@ export default function Game() {
     );
   }
 
-  // 4. Montagem dinâmica do status da rodada
+  // 4. Montagem dinâmica do status da rodada usando os emojis customizados
   let statusText;
   if (winner) {
-    const winnerName = winner === 'X' ? gameConfig.player1 : gameConfig.player2;
+    const winnerName = winner === gameConfig.player1Symbol ? gameConfig.player1 : gameConfig.player2;
     statusText = `🎉 Vencedor da Rodada: ${winnerName} (${winner})!`;
   } else if (isDraw) {
     statusText = "👵 Deu Velha! Empate na rodada!";
   } else {
     const currentPlayerName = xIsNext ? gameConfig.player1 : gameConfig.player2;
-    const currentSymbol = xIsNext ? 'X' : 'O';
+    const currentSymbol = xIsNext ? gameConfig.player1Symbol : gameConfig.player2Symbol;
     statusText = `Turno de: ${currentPlayerName} (${currentSymbol})`;
   }
 
-  const willNextGameEndSeries = (winner === 'X' && scores.player1 + 1 === gameConfig.maxGames) || 
-                                (winner === 'O' && scores.player2 + 1 === gameConfig.maxGames);
+  const willNextGameEndSeries = (winner === gameConfig.player1Symbol && scores.player1 + 1 === gameConfig.maxGames) || 
+                                (winner === gameConfig.player2Symbol && scores.player2 + 1 === gameConfig.maxGames);
 
   return (
     <div className="game-wrapper">
-      {/* Placar dinâmico no topo */}
       <div className={styles.scoreHeader}>
         <div className={styles.seriesProgress}>
           Partida Atual: <strong>#{currentGameCount}</strong> — Alvo da Série: <strong>{gameConfig.maxGames} Vitórias</strong>
         </div>
         <div className={styles.scoreBoard}>
-          <span>{gameConfig.player1}: {scores.player1}</span>
+          <span>{gameConfig.player1} ({gameConfig.player1Symbol}): {scores.player1}</span>
           <span className={styles.scoreDivider}>|</span>
           <span>Velhas: {scores.ties}</span>
           <span className={styles.scoreDivider}>|</span>
-          <span>{gameConfig.player2}: {scores.player2}</span>
+          <span>{gameConfig.player2} ({gameConfig.player2Symbol}): {scores.player2}</span>
         </div>
       </div>
 
@@ -193,7 +191,3 @@ export default function Game() {
     </div>
   );
 }
-
-
-
-

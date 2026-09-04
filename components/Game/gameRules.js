@@ -50,7 +50,6 @@ export function calculateWinner(squares, boardSize) {
     const firstSymbol = squares[line[0]];
 
     if (firstSymbol) {
-      // Confere se TODAS as casas daquela combinação específica têm o mesmo símbolo
       const isWinningLine = line.every(index => squares[index] === firstSymbol);
       if (isWinningLine) {
         return firstSymbol; 
@@ -62,20 +61,109 @@ export function calculateWinner(squares, boardSize) {
 }
 
 /**
- * Escolhe uma casa vazia aleatória no tabuleiro para a IA jogar.
- * Funciona dinamicamente para qualquer tamanho de tabuleiro (3x3 até 6x6).
- * @param {Array} squares - O array atual do tabuleiro
- * @returns {Number|null} O índice da casa escolhida ou null se não houver espaço
+ * FUNÇÃO PRINCIPAL DA IA: Decide a jogada baseada no nível de dificuldade selecionado.
  */
-export function getRandomAIMove(squares) {
-  // Filtra os índices de todas as casas que ainda estão vazias (null)
+export function getAIMove(squares, boardSize, difficulty) {
+  if (difficulty === 'medium') {
+    return getMediumAIMove(squares, boardSize);
+  }
+  if (difficulty === 'hard' && boardSize === 3) {
+    return getHardAIMove(squares, boardSize);
+  }
+  // Padrão ou Tabuleiros grandes (4x4 a 6x6): usa o modo aleatório/médio por performance
+  return getRandomAIMove(squares);
+}
+
+// --- NÍVEL FÁCIL: Escolha aleatória ---
+function getRandomAIMove(squares) {
   const emptyIndices = squares
     .map((square, index) => (square === null ? index : null))
     .filter((val) => val !== null);
 
   if (emptyIndices.length === 0) return null;
 
-  // Sorteia uma das posições vazias disponíveis
   const randomIndex = Math.floor(Math.random() * emptyIndices.length);
   return emptyIndices[randomIndex];
 }
+
+// --- NÍVEL MÉDIO: Tenta ganhar ou bloquear o jogador ---
+function getMediumAIMove(squares, boardSize) {
+  const lines = generateWinningCombinations(boardSize);
+
+  // 1. CHANCE DE GANHAR: Vê se a IA ('O') tem uma linha com apenas 1 casa vazia para vencer
+  for (const line of lines) {
+    const symbolsInLine = line.map(index => squares[index]);
+    const oCount = symbolsInLine.filter(s => s === 'O').length;
+    const nullCount = symbolsInLine.filter(s => s === null).length;
+
+    if (oCount === boardSize - 1 && nullCount === 1) {
+      return line[symbolsInLine.indexOf(null)];
+    }
+  }
+
+  // 2. BLOQUEIO: Vê se o Jogador ('X') está prestes a ganhar e fecha a casa dele
+  for (const line of lines) {
+    const symbolsInLine = line.map(index => squares[index]);
+    const xCount = symbolsInLine.filter(s => s === 'X').length;
+    const nullCount = symbolsInLine.filter(s => s === null).length;
+
+    if (xCount === boardSize - 1 && nullCount === 1) {
+      return line[symbolsInLine.indexOf(null)];
+    }
+  }
+
+  // 3. Se não tiver ataque nem defesa urgente, joga em uma casa aleatória
+  return getRandomAIMove(squares);
+}
+
+// --- NÍVEL DIFÍCIL: Algoritmo Minimax Imbatível (Apenas para 3x3) ---
+function getHardAIMove(squares, boardSize) {
+  let bestScore = -Infinity;
+  let bestMove = null;
+
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] === null) {
+      squares[i] = 'O'; // Simula jogada da IA
+      let score = minimax(squares, boardSize, 0, false);
+      squares[i] = null; // Desfaz simulação
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
+      }
+    }
+  }
+  return bestMove !== null ? bestMove : getRandomAIMove(squares);
+}
+
+function minimax(squares, boardSize, depth, isMaximizing) {
+  const winner = calculateWinner(squares, boardSize);
+  if (winner === 'O') return 10 - depth;
+  if (winner === 'X') return depth - 10;
+  if (squares.every(s => s !== null)) return 0;
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < squares.length; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'O';
+        let score = minimax(squares, boardSize, depth + 1, false);
+        squares[i] = null;
+        bestScore = Math.max(score, bestScore);
+      }
+    }
+    return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < squares.length; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'X';
+        let score = minimax(squares, boardSize, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
+  }
+}
+

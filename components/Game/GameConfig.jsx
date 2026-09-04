@@ -7,13 +7,14 @@ import styles from './GameConfig.module.css';
  * @param {Function} props.onStartGame - Função do Game.jsx acionada ao enviar o formulário
  */
 export default function GameConfig({ onStartGame }) {
-  // 1. Estado inicial unificado com os tipos corretos (números para boardSize e maxGames)
+  // 1. Estado inicial unificado com os tipos corretos e o novo campo 'difficulty'
   const [formData, setFormData] = useState({
     gameMode: 'pvp',
     player1: 'Jogador 1',
     player2: 'Jogador 2',
     boardSize: 3,
-    maxGames: 1
+    maxGames: 1,
+    difficulty: 'easy' // Nível padrão inicial
   });
 
   // 2. Função genérica que atualiza o estado e já trata a tipagem numérica
@@ -76,7 +77,7 @@ export default function GameConfig({ onStartGame }) {
           value={formData.player1}
           onChange={handleChange}
           required
-        />
+                />
       </div>
 
       {/* Input: Nome Jogador 2 (Exibido apenas se gameMode NÃO for 'ai') */}
@@ -91,6 +92,23 @@ export default function GameConfig({ onStartGame }) {
             onChange={handleChange}
             required
           />
+        </div>
+      )}
+
+      {/* NOVO CAMPO: Select de Dificuldade (Exibido apenas se gameMode FOR 'ai') */}
+      {formData.gameMode === 'ai' && (
+        <div className={styles.formGroup}>
+          <label htmlFor="difficulty">Dificuldade da IA:</label>
+          <select
+            id="difficulty"
+            name="difficulty"
+            value={formData.difficulty}
+            onChange={handleChange}
+          >
+            <option value="easy">Fácil 🥴 (Aleatório)</option>
+            <option value="medium">Médio 🤔 (Bloqueia e Ataca)</option>
+            <option value="hard">Difícil 🧠 (Imbatível / Minimax)</option>
+          </select>
         </div>
       )}
 

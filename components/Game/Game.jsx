@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'; // 1. Adicionado useEffect para controlar o turno da IA
+import { useState, useEffect } from 'react'; // 1. Mantém o useEffect ativo para monitorar os turnos
 import GameConfig from './GameConfig.jsx';
 import Board from '../Board/Board.jsx';
-// 2. Importa as duas funções juntas do seu arquivo gameRules atualizado
-import { calculateWinner, getRandomAIMove } from '../Game/gameRules.js'; 
+// 2. Atualizado o import para usar a nova função mestre de IA (getAIMove)
+import { calculateWinner, getAIMove } from '../Game/gameRules.js'; 
 
 // Importa o arquivo de estilos unificado
 import styles from './GameConfig.module.css'; 
@@ -35,7 +35,7 @@ export default function Game() {
   const winner = gameConfig ? calculateWinner(squares, gameConfig.boardSize) : null;
   const isDraw = !winner && squares.length > 0 && squares.every(square => square !== null);
 
-  // --- EFEITO AUTOMÁTICO: TURNO DA IA ---
+  // --- EFEITO AUTOMÁTICO: TURNO DA IA COM NÍVEIS DE DIFICULDADE ---
   useEffect(() => {
     // Só age se o jogo começou, o modo escolhido for 'ai', for o turno do 'O' (Robô) e a partida não acabou
     const isAITurn = gameStarted && gameConfig?.gameMode === 'ai' && !xIsNext;
@@ -44,10 +44,11 @@ export default function Game() {
     if (isAITurn && !isGameOver) {
       // Pequeno atraso de 500ms para simular o tempo de pensamento do robô (Melhor UX)
       const timer = setTimeout(() => {
-        const aiMove = getRandomAIMove(squares);
+        // Agora passa dinamicamente a dificuldade selecionada nas configurações para decidir a jogada!
+        const aiMove = getAIMove(squares, gameConfig.boardSize, gameConfig.difficulty);
         
         if (aiMove !== null) {
-          handlePlay(aiMove); // Executa a jogada do robô chamando a função de clique
+          handlePlay(aiMove); // Executa a jogada calculada simulando o clique do robô
         }
       }, 500);
 
@@ -192,6 +193,7 @@ export default function Game() {
     </div>
   );
 }
+
 
 
 

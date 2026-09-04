@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styles from './GameConfig.module.css';
 
-
 /**
  * Componente de formulário para configurar as opções da partida.
  * @param {Object} props

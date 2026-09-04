@@ -1,3 +1,6 @@
+/* ==========================================================================
+   ESTILOS ORIGINAIS DO FORMULÁRIO (MANTIDOS EXATAMENTE IGUAIS)
+   ========================================================================== */
 
 .configForm {
   background-color: #fffaf0; /* Fundo amarelo pastel bem suave */
@@ -68,4 +71,150 @@
 .submitBtn:hover {
   background-color: #ff9aa2; /* Rosa um pouco mais intenso no hover */
   transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   NOVOS ESTILOS INTEGRADOS (SÉRIE, PLACAR E TELA DE CAMPEÃO)
+   ========================================================================== */
+
+/* Container superior que envolve o placar da série */
+.scoreHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Texto indicando a rodada atual e meta (ex: Partida #1 — Alvo: 3 Vitórias) */
+.seriesProgress {
+  color: #b57c8a; /* Mesmo marrom rosado dos labels */
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+}
+
+.seriesProgress strong {
+  color: #ff69b4; /* Destaca os números em rosa choque suave */
+}
+
+/* Painel horizontal com os pontos acumulados dos jogadores */
+.scoreBoard {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: #fffaf0; /* Fundo amarelo pastel igual ao formulário */
+  border: 2px solid #ffe4e1; /* Borda rosa claro combinando */
+  padding: 0.6rem 1.8rem;
+  border-radius: 24px; /* Estilo pílula arredondada */
+  font-weight: bold;
+  color: #4a4a4a;
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.1);
+}
+
+.scoreDivider {
+  color: #ffe4e1;
+  font-weight: normal;
+}
+
+/* Área inferior onde o botão condicional é exibido */
+.bottomArea {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.statusWaiting {
+  color: #b57c8a;
+  font-size: 0.95rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Botão "Avançar para Próxima Partida" */
+.flowBtn {
+  background-color: #ffb6c1; /* Mesmo rosa do botão original */
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+}
+
+.flowBtn:hover {
+  background-color: #ff9aa2;
+  transform: translateY(-1px);
+}
+
+/* Variação do botão quando ele for encerrar a série inteira (Última Partida) */
+.flowBtnFinal {
+  background-color: #ff69b4; /* Rosa um pouco mais chamativo para decisão */
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+.flowBtnFinal:hover {
+  background-color: #ff4da6;
+}
+
+/* --- PAINEL DA TELA FINAL DE CAMPEÃO GERAL --- */
+.seriesOverScreen {
+  background-color: #fffaf0; /* Mesmo padrão de fundo */
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(255, 182, 193, 0.25);
+  max-width: 450px;
+  margin: 2rem auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  text-align: center;
+  border: 2px solid #ffe4e1;
+}
+
+.seriesOverScreen h2 {
+  color: #ff69b4;
+  font-size: 1.8rem;
+  margin: 0 0 1rem 0;
+}
+
+/* Caixa de destaque parabenizando o campeão */
+.championText {
+  color: #b57c8a;
+  font-size: 1.2rem;
+  margin: 1.5rem 0;
+  font-weight: bold;
+  background-color: #ffffff; /* Fundo branco para destacar do fundo pastel */
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid #ffe4e1;
+}
+
+/* Tabela/Painel interno contendo o histórico final de pontos */
+.finalScorePanel {
+  background-color: #ffffff;
+  padding: 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px dashed #b57c8a;
+  text-align: left;
+}
+
+.finalScorePanel p {
+  margin: 0.6rem 0;
+  color: #4a4a4a;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.finalScorePanel strong {
+  color: #ff69b4; /* Pontuação final destacada em rosa */
+}
+
+/* Linha divisória de rodadas totais na tabela de pontuação */
+.totalMatchesRow {
+  border-top: 1px solid #ffe4e1;
+  padding-top: 0.6rem;
+  margin-top: 0.6rem !important;
+  font-size: 0.9rem !important;
+  color: #b57c8a !important;
 }
